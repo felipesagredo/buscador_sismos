@@ -30,7 +30,7 @@ export default {
     return {
       fechaInicio: '',
       fechaTermino: '',
-      magnitud: '3.5',
+      magnitud: '4.2',
       earthquakes: [],
       map: null,
     };
