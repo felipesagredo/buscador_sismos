@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Buscador de Sismos</h1>
+    <h1>Buscador de Sismos Mundial</h1>
     <div>
       <label for="fechaInicio">Fecha de Inicio:</label>
       <input type="date" id="fechaInicio" v-model="fechaInicio" />
@@ -13,10 +13,10 @@
     </div>
     <ul v-if="earthquakes.length">
       <li v-for="earthquake in earthquakes" :key="earthquake.id">
-        {{ earthquake.properties.place }} - Magnitud: {{ earthquake.properties.mag }}
+        {{ earthquake.properties.place }} - Magnitud: {{ earthquake.properties.mag }} - Fecha: {{  }}
       </li>
     </ul>
-    <p v-else>No se encontraron terremotos para el rango de fechas seleccionado.</p>
+    <p v-else>No se encontraron Sismos para el rango de fechas seleccionado.</p>
   </div>
 </template>
 
@@ -28,7 +28,8 @@ export default {
     return {
       fechaInicio: '',
       fechaTermino: '',
-      magnitud: '',
+      magnitud: '3.5',
+      
       earthquakes: [],
     };
   },
