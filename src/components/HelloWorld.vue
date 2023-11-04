@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="map" style="height: 400px;"></div>
+    <div id="map" class="map-container" style="height: 400px;"></div>
     <h1>Buscador de Sismos alrededor del Mundo</h1>
     <div>
       <label for="fechaInicio">Fecha de Inicio:</label>
@@ -33,20 +33,17 @@ export default {
       magnitud: '4.2',
       earthquakes: [],
       map: null,
+      popupTemplate: null
     };
   },
   mounted() {
   // Crea un mapa en el div con id "map"
   this.map = L.map('map').setView([-36.820087, -73.044280], 13);
-
+  
   // Agrega una capa de mapa base, como OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
 
-
-  // Maneja el evento de clic en el mapa
-  this.map.on('click', (e) => {
-    alert("You clicked the map at " + e.latlng);
-  });
+  this.popupTemplate = L.popup();
 },
   methods: {
     buscarTerremotos() {
@@ -79,18 +76,16 @@ export default {
               Fecha: ${this.formatDate(earthquake.properties.time)}
             `;
                 // Agrega un círculo con propiedades personalizadas
-              L.circle(latlng, {
-              color: 'red',
-              fillColor: '#f03',
-              fillOpacity: 0.5,
-              radius: earthquake.properties.sig * 10
-            }).addTo(this.map);
+              // Utiliza la plantilla del popup previamente creada
+      const popup = this.popupTemplate
+        .setContent(popupContent);
 
-            L.circle(latlng, {
-              radius: earthquake.properties.mag * 5000, // Tamaño del círculo en metros (ajústalo según tus preferencias)
-            })
-              .bindPopup(popupContent)
-              .addTo(this.map);
+      // Agrega un círculo con el popup
+      L.circle(latlng, {
+        radius: earthquake.properties.mag * 5000,
+      })
+        .bindPopup(popup) // Vincula el popup aquí
+        .addTo(this.map);
             });
           })
           .catch(error => {
@@ -105,3 +100,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+
+.map-container {
+  width: 100%; /* Ajusta el ancho según tus necesidades */
+  height: 400px; /* Ajusta la altura según tus necesidades */
+}
+
+</style>
