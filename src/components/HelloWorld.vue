@@ -42,6 +42,7 @@ export default {
   // Agrega una capa de mapa base, como OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
 
+
   // Maneja el evento de clic en el mapa
   this.map.on('click', (e) => {
     alert("You clicked the map at " + e.latlng);
@@ -77,13 +78,20 @@ export default {
               Magnitud: ${earthquake.properties.mag}<br>
               Fecha: ${this.formatDate(earthquake.properties.time)}
             `;
+                // Agrega un círculo con propiedades personalizadas
+              L.circle(latlng, {
+              color: 'red',
+              fillColor: '#f03',
+              fillOpacity: 0.5,
+              radius: earthquake.properties.sig * 10
+            }).addTo(this.map);
 
             L.circle(latlng, {
-              radius: earthquake.properties.mag * 10000, // Tamaño del círculo en metros (ajústalo según tus preferencias)
+              radius: earthquake.properties.mag * 5000, // Tamaño del círculo en metros (ajústalo según tus preferencias)
             })
               .bindPopup(popupContent)
               .addTo(this.map);
-          });
+            });
           })
           .catch(error => {
             console.error('Error al cargar los datos de terremotos', error);
