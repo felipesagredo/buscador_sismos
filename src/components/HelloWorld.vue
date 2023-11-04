@@ -37,13 +37,11 @@ export default {
     };
   },
   mounted() {
-  // Crea un mapa en el div con id "map"
-  this.map = L.map('map').setView([-36.820087, -73.044280], 13);
-  
-  // Agrega una capa de mapa base, como OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
-
-  this.popupTemplate = L.popup();
+    // Crea un mapa en el div con id "map"
+    this.map = L.map('map').setView([-36.820087, -73.044280], 13);
+    // Agrega una capa de mapa base, como OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
+    this.popupTemplate = L.popup();
 },
   methods: {
     buscarTerremotos() {
@@ -51,41 +49,35 @@ export default {
         const startDate = this.fechaInicio;
         const endDate = this.fechaTermino;
         const magnitude = this.magnitud;
-
         const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startDate}&endtime=${endDate}&minmagnitude=${magnitude}`;
-
         axios.get(url)
           .then(response => {
             this.earthquakes = response.data.features;
-
             // Limpia los marcadores anteriores del mapa
             this.map.eachLayer(layer => {
               if (layer instanceof L.Marker) {
                 this.map.removeLayer(layer);
               }
             });
-
             // Agrega marcadores para los terremotos
             this.earthquakes.forEach(earthquake => {
             const coordinates = earthquake.geometry.coordinates;
             const latlng = [coordinates[1], coordinates[0]]; // Invertir las coordenadas
-
             const popupContent = `
               <strong>${earthquake.properties.place}</strong><br>
               Magnitud: ${earthquake.properties.mag}<br>
               Fecha: ${this.formatDate(earthquake.properties.time)}
             `;
-                // Agrega un círculo con propiedades personalizadas
+              // Agrega un círculo con propiedades personalizadas
               // Utiliza la plantilla del popup previamente creada
-      const popup = this.popupTemplate
-        .setContent(popupContent);
-
-      // Agrega un círculo con el popup
-      L.circle(latlng, {
-        radius: earthquake.properties.mag * 5000,
-      })
-        .bindPopup(popup) // Vincula el popup aquí
-        .addTo(this.map);
+              const popup = this.popupTemplate
+                .setContent(popupContent);
+              // Agrega un círculo con el popup
+              L.circle(latlng, {
+                radius: earthquake.properties.mag * 5000,
+              })
+                .bindPopup(popup) // Vincula el popup aquí
+                .addTo(this.map);
             });
           })
           .catch(error => {
