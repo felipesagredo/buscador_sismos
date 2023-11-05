@@ -53,6 +53,15 @@ export default {
     // Agrega una capa de mapa base, como OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
     this.popupTemplate = L.popup(this.popupContent);
+
+    this.map.on('zoomend', () => {
+    // Limpia los marcadores anteriores del mapa al hacer zoom
+    this.map.eachLayer(layer => {
+      if (layer instanceof L.Marker) {
+        this.map.removeLayer(layer);
+      }
+    });
+  });
 },
   methods: {
     buscarTerremotos() {
@@ -63,13 +72,13 @@ export default {
         const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startDate}&endtime=${endDate}&minmagnitude=${magnitude}`;
         axios.get(url)
           .then(response => {
-            this.earthquakes = response.data.features;
-            // Limpia los marcadores anteriores del mapa
             this.map.eachLayer(layer => {
               if (layer instanceof L.Marker) {
                 this.map.removeLayer(layer);
               }
             });
+            this.earthquakes = response.data.features;
+            // Limpia los marcadores anteriores del mapa
             // Agrega marcadores para los terremotos
             this.earthquakes.forEach(earthquake => {
               const coordinates = earthquake.geometry.coordinates;
@@ -79,12 +88,11 @@ export default {
                 Magnitud: ${earthquake.properties.mag}<br>
                 Fecha: ${this.formatDate(earthquake.properties.time)}
               `;
-                // Agrega un círculo con propiedades personalizadas
-                // Utiliza la plantilla del popup previamente creada
-                const popup = this.popupTemplate.setContent(popupContent);
+                //const popup = this.popupTemplate.setContent(popupContent);
+                const popup = L.popup().setContent(popupContent);
                 // Agrega un círculo con el popup
                 L.circleMarker(latlng, {
-                  radius: earthquake.properties.mag * 5,
+                  radius: earthquake.properties.mag * 0.8,
                 }).bindPopup(popup).addTo(this.map);
             });
           })
