@@ -49,18 +49,29 @@ export default {
   },
   mounted() {
     // Crea un mapa en el div con id "map"
-    this.map = L.map('map').setView([-36.820087, -73.044280], 13);
+    this.map = L.map('map', {
+      zoomAnimation: false,
+      fadeAnimation: true,
+      markerZoomAnimation: false
+    }).setView([-36.820087, -73.044280], 13);
     // Agrega una capa de mapa base, como OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
-    this.popupTemplate = L.popup(this.popupContent);
+    // Agrega una capa de mapa base, como OpenStreetMap, con noWrap para evitar que se repita
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    noWrap: true
+  }).addTo(this.map);
 
-    this.map.on('zoomend', () => {
-    // Limpia los marcadores anteriores del mapa al hacer zoom
-    this.map.eachLayer(layer => {
-      if (layer instanceof L.Marker) {
-        this.map.removeLayer(layer);
-      }
-    });
+  // Ajusta los límites del mapa para evitar que se pueda desplazar fuera de los límites visibles
+  const southWest = L.latLng(-90, -180);
+  const northEast = L.latLng(90, 180);
+  const bounds = L.latLngBounds(southWest, northEast);
+
+  this.map.setMaxBounds(bounds);
+  this.map.on('drag', () => {
+    this.map.panInsideBounds(bounds, { animate: false });
+  });
+
+  this.map.whenReady(() => {
+    this.popupTemplate = L.popup(this.popupContent);
   });
 },
   methods: {
@@ -92,7 +103,7 @@ export default {
                 const popup = L.popup().setContent(popupContent);
                 // Agrega un círculo con el popup
                 L.circleMarker(latlng, {
-                  radius: earthquake.properties.mag * 0.8,
+                  radius: earthquake.properties.mag * 2,
                 }).bindPopup(popup).addTo(this.map);
             });
           })
@@ -114,7 +125,7 @@ export default {
 .map-container {
   margin-top: 0;
   width: 100%; /* Ajusta el ancho según tus necesidades */
-  height: 50vh; /* Ajusta la altura según tus necesidades */
+  height: 55vh; /* Ajusta la altura según tus necesidades */
 }
 
 .justified-table {
