@@ -1,6 +1,6 @@
 <template>
   <div class="origin">
-    <div id="map" class="map-container" style="height: 500px;"></div>
+    <div id="map" class="map-container" ></div>
     <h1>Buscador de movimientos telúricos</h1>
     <div class="input-container">
       <label for="fechaInicio">Fecha de Inicio:</label>
@@ -92,7 +92,7 @@ export default {
                 const popup = L.popup().setContent(popupContent);
                 // Agrega un círculo con el popup
                 L.circleMarker(latlng, {
-                  radius: earthquake.properties.mag * 0.8,
+                  radius: earthquake.properties.mag * 2,
                 }).bindPopup(popup).addTo(this.map);
             });
           })
@@ -114,7 +114,7 @@ export default {
 .map-container {
   margin-top: 0;
   width: 100%; /* Ajusta el ancho según tus necesidades */
-  height: 400px; /* Ajusta la altura según tus necesidades */
+  height: 50vh; /* Ajusta la altura según tus necesidades */
 }
 
 .justified-table {
