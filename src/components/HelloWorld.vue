@@ -1,6 +1,6 @@
 <template>
   <div class="origin">
-    <div id="map" class="map-container" ></div>
+    <div id="map" class="map-container"></div>
     <h1>Buscador de movimientos telúricos</h1>
     <div class="input-container">
       <label for="fechaInicio">Fecha de Inicio:</label>
@@ -92,7 +92,7 @@ export default {
                 const popup = L.popup().setContent(popupContent);
                 // Agrega un círculo con el popup
                 L.circleMarker(latlng, {
-                  radius: earthquake.properties.mag * 2,
+                  radius: earthquake.properties.mag * 0.8,
                 }).bindPopup(popup).addTo(this.map);
             });
           })
