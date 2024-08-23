@@ -1,5 +1,5 @@
 <template>
-  <div class="origin">
+  <div class="app-container">
     <div id="map" class="map-container"></div>
     <h1>Buscador de movimientos telúricos</h1>
     <div class="input-container">
@@ -26,10 +26,111 @@
           <td>{{ formatDate(earthquake.properties.time) }}</td>
         </tr>
       </tbody>
-</table>
+    </table>
     <p v-else>No se encontraron Sismos para el rango de fechas seleccionado.</p>
   </div>
 </template>
+
+<style scoped>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
+}
+
+.map-container {
+  margin-top: 0;
+  width: 100%;
+  height: 60vh;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h1 {
+  margin-top: 20px;
+  font-size: 2em;
+  color: #00796b;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.input-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 15px;
+}
+
+input, button {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em;
+  outline: none;
+}
+
+input:focus {
+  border-color: #00796b;
+  box-shadow: 0 0 5px rgba(0, 121, 107, 0.3);
+}
+
+button {
+  background: linear-gradient(135deg, #00796b, #004d40);
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #004d40, #00796b);
+}
+
+.justified-table {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 1000px;
+  border-collapse: collapse;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.justified-table th, .justified-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.justified-table th {
+  background-color: #00796b;
+  color: white;
+}
+
+.justified-table tr:nth-child(even) {
+  background-color: #e0f2f1;
+}
+
+.justified-table tr:hover {
+  background-color: #b2dfdb;
+}
+
+@media (max-width: 768px) {
+  .input-container {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  input, button {
+    width: 80%;
+    font-size: 0.9em;
+  }
+}
+</style>
+
 
 <script>
 import axios from 'axios';
@@ -119,49 +220,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-.map-container {
-  margin-top: 0;
-  width: 100%; /* Ajusta el ancho según tus necesidades */
-  height: 55vh; /* Ajusta la altura según tus necesidades */
-}
-
-.justified-table {
-  margin: auto;
-  margin-top: 20px;
-  width: fit-content;
-  min-width: 100%;
-  border-collapse: collapse;
-}
-
-.justified-table th, .justified-table td {
-  text-align: justify;
-  padding: 8px;
-  border: 1px solid #dddddd;
-}
-
-.justified-table th {
-  background-color: #f2f2f2;
-}
-
-.justified-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.justified-table tr:nth-child(odd) {
-  background-color: #ffffff;
-}
-.input-container{
-  text-align: justify;
-  margin: auto;
-  display: grid;
-  width: 200px;
-  height: fit-content;
-}
-
-input {
-  margin-bottom: 10px;
-}
-</style>
