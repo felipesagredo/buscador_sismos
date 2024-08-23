@@ -177,22 +177,25 @@ export default {
 },
   methods: {
     buscarTerremotos() {
-      if (this.fechaInicio && this.fechaTermino) {
-        const startDate = this.fechaInicio;
-        const endDate = this.fechaTermino;
-        const magnitude = this.magnitud;
-        const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startDate}&endtime=${endDate}&minmagnitude=${magnitude}`;
-        axios.get(url)
-          .then(response => {
-            this.map.eachLayer(layer => {
-              if (layer instanceof L.Marker) {
-                this.map.removeLayer(layer);
-              }
-            });
-            this.earthquakes = response.data.features;
-            // Limpia los marcadores anteriores del mapa
-            // Agrega marcadores para los terremotos
-            this.earthquakes.forEach(earthquake => {
+    if (this.fechaInicio && this.fechaTermino) {
+      const startDate = this.fechaInicio;
+      const endDate = this.fechaTermino;
+      const magnitude = this.magnitud;
+      const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startDate}&endtime=${endDate}&minmagnitude=${magnitude}`;
+      
+      axios.get(url)
+        .then(response => {
+          this.map.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+              this.map.removeLayer(layer);
+            }
+          });
+
+          this.earthquakes = response.data.features;
+
+          // Función para agregar los terremotos con animación
+          this.earthquakes.forEach((earthquake, index) => {
+            setTimeout(() => {
               const coordinates = earthquake.geometry.coordinates;
               const latlng = [coordinates[1], coordinates[0]]; // Invertir las coordenadas
               const popupContent = `
@@ -200,23 +203,23 @@ export default {
                 Magnitud: ${earthquake.properties.mag}<br>
                 Fecha: ${this.formatDate(earthquake.properties.time)}
               `;
-                //const popup = this.popupTemplate.setContent(popupContent);
-                const popup = L.popup().setContent(popupContent);
-                // Agrega un círculo con el popup
-                L.circleMarker(latlng, {
-                  radius: earthquake.properties.mag * 2,
-                }).bindPopup(popup).addTo(this.map);
-            });
-          })
-          .catch(error => {
-            console.error('Error al cargar los datos de terremotos', error);
+              const popup = L.popup().setContent(popupContent);
+
+              L.circleMarker(latlng, {
+                radius: earthquake.properties.mag * 2,
+              }).bindPopup(popup).addTo(this.map);
+            }, index * 45); // Espaciar la aparición cada 500ms
           });
-      }
-    },
-    formatDate(timestamp) {
-      const date = new Date(timestamp);
-      return date.toLocaleString();
-    },
+        })
+        .catch(error => {
+          console.error('Error al cargar los datos de terremotos', error);
+        });
+    }
+  },
+  formatDate(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  },
   },
 };
 </script>
